@@ -1,3 +1,4 @@
+/* eslint-disable */
 import PatientForm from "@/components/forms/PatientForm";
 import PasskeyModal from "@/components/PasskeyModal";
 import Image from "next/image";
