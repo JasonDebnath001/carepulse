@@ -4,10 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 
 export default function Home({
-  searchParams,
+  searchParams = {},
 }: {
-  searchParams: { [key: string]: string | string[] | undefined };
-}) {
+  searchParams?: { [key: string]: string | string[] | undefined };
+} = {}) {
   const isAdmin = searchParams?.admin === "true";
 
   return (
