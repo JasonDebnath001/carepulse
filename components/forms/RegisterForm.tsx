@@ -87,7 +87,7 @@ const RegisterForm = ({ user }: { user: User }) => {
 
     try {
       console.log("Submitting patientData:", payload);
-      // @ts-expect-error
+      // @ts-expect-error FormData type is not compatible with registerPatient signature
       const patient = await registerPatient(payload);
       console.log("registerPatient result:", patient);
       if (patient) {

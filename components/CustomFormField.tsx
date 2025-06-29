@@ -35,7 +35,7 @@ DatePickerInput.displayName = "DatePickerInput";
 interface CustomProps<T extends FieldValues = FieldValues> {
   control: Control<T>;
   fieldType: FormFieldType;
-  name: string;
+  name: keyof T;
   label?: string;
   placeholder?: string;
   iconSrc?: string;
@@ -44,14 +44,14 @@ interface CustomProps<T extends FieldValues = FieldValues> {
   dateFormat?: string;
   showTimeSelect?: boolean;
   children?: React.ReactNode;
-  renderSkeleton?: (field: ControllerRenderProps<T, any>) => React.ReactNode;
+  renderSkeleton?: <K extends keyof T>(field: ControllerRenderProps<T, K>) => React.ReactNode;
 }
 
-const RenderField = <T extends FieldValues = FieldValues>({
+const RenderField = <T extends FieldValues = FieldValues, K extends keyof T = keyof T>({
   field,
   props,
 }: {
-  field: ControllerRenderProps<T, any>;
+  field: ControllerRenderProps<T, K>;
   props: CustomProps<T>;
 }) => {
   const {
@@ -85,7 +85,6 @@ const RenderField = <T extends FieldValues = FieldValues>({
           </FormControl>
         </div>
       );
-      break;
     case FormFieldType.PHONE_INPUT:
       return (
         <FormControl>
@@ -155,12 +154,12 @@ const RenderField = <T extends FieldValues = FieldValues>({
         <FormControl>
           <div className="flex items-center gap-4">
             <Checkbox
-              id={props.name}
+              id={props.name as string}
               checked={field.value}
               onCheckedChange={field.onChange}
             />
             <Label
-              htmlFor={props.name}
+              htmlFor={props.name as string}
               className="cursor-pointer text-sm font-medium text-dark-700 peer-disabled:cursor-not-allowed peer-disabled:opacity-70 md:leading-none"
             >
               {props.label}
@@ -175,12 +174,12 @@ const RenderField = <T extends FieldValues = FieldValues>({
   }
 };
 
-const CustomFormField = <T extends FieldValues = FieldValues>(props: CustomProps<T>) => {
+const CustomFormField = <T extends FieldValues = FieldValues, K extends keyof T = keyof T>(props: CustomProps<T>) => {
   const { control, fieldType, name, label } = props;
   return (
     <FormField
       control={control}
-      name={name}
+      name={name as string}
       render={({ field }) => (
         <FormItem className="flex-1">
           {fieldType !== FormFieldType.CHECKBOX && (
