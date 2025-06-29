@@ -4,8 +4,13 @@ import PasskeyModal from "@/components/PasskeyModal";
 import Image from "next/image";
 import Link from "next/link";
 
-export default async function Home(props: { searchParams?: { admin?: string } }) {
-  const isAdmin = props.searchParams?.admin === "true";
+type Props = {
+  params: { [key: string]: string };
+  searchParams: { [key: string]: string | string[] | undefined };
+};
+
+export default function Home({ searchParams }: Props) {
+  const isAdmin = searchParams?.admin === "true";
 
   return (
     <div className="flex h-screen max-h-screen">
@@ -22,7 +27,7 @@ export default async function Home(props: { searchParams?: { admin?: string } })
           <PatientForm />
           <div className="justify-items-end text-center text-[#76828D] xl:text-left mt-20 flex justify-between ">
             <p className="justify-items-end text-[#76828d] xl:text-left">
-              &copy; 2025 carepulse
+              &copy; 2025 CarePulse
             </p>
             <Link href={"/?admin=true"} className="text-green-500">
               Admin
