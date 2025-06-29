@@ -1,5 +1,5 @@
 "use server";
-import { ID, Models, Query } from "node-appwrite";
+import { ID, Query } from "node-appwrite";
 import {
   BUCKET_ID,
   DATABASE_ID,
@@ -22,8 +22,13 @@ export const createUser = async (user: CreateUserParams) => {
       user.name
     );
     return newUser; // <-- Return the created user
-  } catch (error: any) {
-    if (error && error?.code === 409) {
+  } catch (error: unknown) {
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "code" in error &&
+      (error as { code?: number }).code === 409
+    ) {
       const existingUser = await users.list([
         Query.equal("email", [user.email]),
       ]);
@@ -61,10 +66,10 @@ function parseStringify<T>(obj: T): T {
   return JSON.parse(JSON.stringify(obj));
 }
 
-export const registerPatient = async (input: any) => {
+export const registerPatient = async (input: FormData | Record<string, unknown>) => {
   try {
-    let patient: any = {};
-    let identificationDocument = undefined;
+    let patient: Record<string, unknown> = {};
+    let identificationDocument: unknown = undefined;
 
     // Check if input is FormData (file upload case)
     if (typeof input?.get === "function") {
@@ -102,7 +107,7 @@ export const registerPatient = async (input: any) => {
         ...input,
         gender: input.gender ? String(input.gender).toLowerCase() : undefined,
       };
-      identificationDocument = input.identificationDocument;
+      identificationDocument = (input as Record<string, unknown>).identificationDocument;
     }
 
     // Debug: log patient object
@@ -111,8 +116,8 @@ export const registerPatient = async (input: any) => {
     let file;
     if (identificationDocument) {
       const inputFile = InputFile.fromBuffer(
-        identificationDocument, // may need to convert to buffer if not already
-        identificationDocument.name || "document"
+        identificationDocument as Buffer, // may need to convert to buffer if not already
+        (identificationDocument as { name?: string }).name || "document"
       );
       file = await storage.createFile(BUCKET_ID!, ID.unique(), inputFile);
     }

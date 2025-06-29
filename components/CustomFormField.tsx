@@ -1,17 +1,13 @@
 import React from "react";
-import { z } from "zod";
-import { Button } from "@/components/ui/button";
 import {
-  Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Control } from "react-hook-form";
+import { Control, ControllerRenderProps, FieldValues } from "react-hook-form";
 import { FormFieldType } from "./forms/PatientForm";
 import Image from "next/image";
 import "react-phone-number-input/style.css";
@@ -36,8 +32,8 @@ const DatePickerInput = React.forwardRef<
 ));
 DatePickerInput.displayName = "DatePickerInput";
 
-interface CustomProps {
-  control: Control<any>;
+interface CustomProps<T extends FieldValues = FieldValues> {
+  control: Control<T>;
   fieldType: FormFieldType;
   name: string;
   label?: string;
@@ -48,10 +44,16 @@ interface CustomProps {
   dateFormat?: string;
   showTimeSelect?: boolean;
   children?: React.ReactNode;
-  renderSkeleton?: (field: any) => React.ReactNode;
+  renderSkeleton?: (field: ControllerRenderProps<T, any>) => React.ReactNode;
 }
 
-const RenderField = ({ field, props }: { field: any; props: CustomProps }) => {
+const RenderField = <T extends FieldValues = FieldValues>({
+  field,
+  props,
+}: {
+  field: ControllerRenderProps<T, any>;
+  props: CustomProps<T>;
+}) => {
   const {
     fieldType,
     iconSrc,
@@ -173,7 +175,7 @@ const RenderField = ({ field, props }: { field: any; props: CustomProps }) => {
   }
 };
 
-const CustomFormField = (props: CustomProps) => {
+const CustomFormField = <T extends FieldValues = FieldValues>(props: CustomProps<T>) => {
   const { control, fieldType, name, label } = props;
   return (
     <FormField

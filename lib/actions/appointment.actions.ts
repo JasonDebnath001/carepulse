@@ -4,7 +4,6 @@ import {
   APPOINTMENT_COLLECTION_ID,
   DATABASE_ID,
   databases,
-  ENDPOINT,
   messaging,
 } from "../appwrite.config";
 import { Appointment } from "@/types/appwrite.types";

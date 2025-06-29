@@ -41,24 +41,20 @@ const RegisterForm = ({ user }: { user: User }) => {
   async function onSubmit(values: z.infer<typeof PatientFormValidation>) {
     setIsLoading(true);
 
-    let payload: any = values;
-    let useFormData = false;
+    let payload: FormData | Record<string, unknown> = values;
     if (
       values.identificationDocument &&
       values.identificationDocument.length > 0
     ) {
-      useFormData = true;
       const formData = new FormData();
       // Append all fields except identificationDocument
       Object.entries(values).forEach(([key, value]) => {
-        if (key !== "identificationDocument") {
-          // Fix typo for identificationNumber if needed
-          const fieldKey = key === "identificationNumber" ? "indentificationNumber" : key;
-          if (typeof value === "object" && value !== null) {
-            formData.append(fieldKey, JSON.stringify(value));
-          } else {
-            formData.append(fieldKey, String(value));
-          }
+        // Fix typo for identificationNumber if needed
+        const fieldKey = key === "identificationNumber" ? "indentificationNumber" : key;
+        if (typeof value === "object" && value !== null) {
+          formData.append(fieldKey, JSON.stringify(value));
+        } else {
+          formData.append(fieldKey, String(value));
         }
       });
       // Append the file
@@ -76,7 +72,7 @@ const RegisterForm = ({ user }: { user: User }) => {
       formData.append("phone", values.phone || "");
       formData.append("privacyConsent", String(values.privacyConsent ?? false));
       // Debug: log all FormData keys/values
-      for (let pair of formData.entries()) {
+      for (const pair of formData.entries()) {
         console.log(pair[0]+ ': ' + pair[1]);
       }
       payload = formData;
@@ -91,7 +87,7 @@ const RegisterForm = ({ user }: { user: User }) => {
 
     try {
       console.log("Submitting patientData:", payload);
-      // @ts-ignore
+      // @ts-expect-error
       const patient = await registerPatient(payload);
       console.log("registerPatient result:", patient);
       if (patient) {
@@ -372,7 +368,7 @@ const RegisterForm = ({ user }: { user: User }) => {
             <ul>
               {Object.entries(form.formState.errors).map(([key, error]) => (
                 <li key={key}>
-                  {key}: {(error as any).message?.toString() ?? "Error"}
+                  {key}: {(error as { message?: string }).message?.toString() ?? "Error"}
                 </li>
               ))}
             </ul>

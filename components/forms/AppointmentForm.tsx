@@ -3,15 +3,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import CustomFormField from "../CustomFormField";
 import SubmitButton from "../SubmitButton";
 import { useState } from "react";
 import { getAppointmentSchema } from "@/lib/validation";
 import { useRouter } from "next/navigation";
-import { createUser } from "@/lib/actions/patient.actions";
 import { FormFieldType } from "./PatientForm";
 import { Doctors } from "@/constants";
 import Image from "next/image";
@@ -107,9 +104,15 @@ export default function AppointmentForm({
         // Before calling updateAppointment, log userId
         console.log("Calling updateAppointment with userId:", userId);
 
+        if (!appointment?.$id) {
+          console.error("No appointment ID found for scheduling.");
+          setIsLoading(false);
+          return;
+        }
+
         const appointmentToUpdate = {
           userId,
-          appointmentId: appointment?.$id!,
+          appointmentId: appointment.$id,
           appointment: {
             primaryPhysician: values?.primaryPhysician,
             schedule: new Date(values?.schedule),
@@ -123,9 +126,14 @@ export default function AppointmentForm({
           form.reset();
         }
       } else if (type === "cancel") {
+        if (!appointment?.$id) {
+          console.error("No appointment ID found for cancellation.");
+          setIsLoading(false);
+          return;
+        }
         const appointmentToUpdate = {
           userId,
-          appointmentId: appointment?.$id!,
+          appointmentId: appointment.$id,
           appointment: {
             primaryPhysician: appointment?.primaryPhysician,
             schedule: appointment?.schedule
