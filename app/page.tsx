@@ -3,8 +3,11 @@ import PasskeyModal from "@/components/PasskeyModal";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function Home(props: any) {
-  const searchParams = props?.searchParams ?? {};
+export default function Home({
+  searchParams,
+}: {
+  searchParams: Record<string, string | string[] | undefined>;
+}) {
   const isAdmin = searchParams?.admin === "true";
 
   return (
