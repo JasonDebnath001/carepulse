@@ -180,7 +180,11 @@ const CustomFormField = <T extends FieldValues = FieldValues>(props: CustomProps
     <FormField
       control={control}
       name={name as string}
-      render={({ field }) => (
+      render={({
+        field,
+      }: {
+        field: ControllerRenderProps<T, typeof name>;
+      }) => (
         <FormItem className="flex-1">
           {fieldType !== FormFieldType.CHECKBOX && (
             <FormLabel>{label}</FormLabel>
