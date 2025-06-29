@@ -44,7 +44,7 @@ interface CustomProps<T extends FieldValues = FieldValues> {
   dateFormat?: string;
   showTimeSelect?: boolean;
   children?: React.ReactNode;
-  renderSkeleton?: <K extends keyof T>(field: ControllerRenderProps<T, K>) => React.ReactNode;
+  renderSkeleton?: (field: ControllerRenderProps<T, any>) => React.ReactNode;
 }
 
 const RenderField = <T extends FieldValues = FieldValues, K extends keyof T = keyof T>({
@@ -174,7 +174,7 @@ const RenderField = <T extends FieldValues = FieldValues, K extends keyof T = ke
   }
 };
 
-const CustomFormField = <T extends FieldValues = FieldValues, K extends keyof T = keyof T>(props: CustomProps<T>) => {
+const CustomFormField = <T extends FieldValues = FieldValues>(props: CustomProps<T>) => {
   const { control, fieldType, name, label } = props;
   return (
     <FormField
